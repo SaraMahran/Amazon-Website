@@ -52,7 +52,7 @@ import {renderCheckoutHeader} from './checkoutHeader.js';
               <span>
               Quantity: <span class="quantity-label js-quantity-label-${matchingProduct.id}">${cartItem.quantity}</span>
               <span class="update-quantity-link link-primary js-update-link"
-                data-product-id="${matchingProduct.id}">
+              data-product-id="${matchingProduct.id}">
                 Update
               </span>
               <input class="quantity-input js-quantity-input-${matchingProduct.id}">
@@ -131,14 +131,6 @@ import {renderCheckoutHeader} from './checkoutHeader.js';
       });
     });
 
-  // function updateCartQuantity() {
-  //   const cartQuantity = calculateCartQuantity();
-  //     document.querySelector('.js-return-to-home-link')
-  //       .innerHTML = `${cartQuantity} items`;
-  //   }
-    
-  //   updateCartQuantity();
-
     document.querySelectorAll('.js-update-link')
     .forEach((link) => {
       link.addEventListener('click', () => {
@@ -180,10 +172,43 @@ import {renderCheckoutHeader} from './checkoutHeader.js';
         renderOrderSummary();
         renderPaymentSummary();
 
-
       });
-
     });
+    document.querySelectorAll('.js-update-link')
+    .forEach((link) => {
+      link.addEventListener('click', () => {
+        const productId = link.dataset.productId;
+
+        const container = document.querySelector(
+          `.js-cart-item-container-${productId}`
+        );
+        container.classList.add('is-editing-quantity');
+      });
+    });
+
+  document.querySelectorAll('.js-save-link')
+    .forEach((link) => {
+      link.addEventListener('click', () => {
+        const productId = link.dataset.productId;
+
+        const container = document.querySelector(
+          `.js-cart-item-container-${productId}`
+        );
+        container.classList.remove('is-editing-quantity');
+
+        const quantityInput = document.querySelector(
+          `.js-quantity-input-${productId}`
+        );
+        const newQuantity = Number(quantityInput.value);
+        updateQuantity(productId, newQuantity);
+
+        renderCheckoutHeader();
+        renderOrderSummary();
+        renderPaymentSummary();
+        });
+      });
+      
+      
 }
 
 
