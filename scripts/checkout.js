@@ -4,7 +4,5 @@ import {renderCheckoutHeader} from './checkout/checkoutHeader.js';
 
 
 renderOrderSummary();
-
 renderPaymentSummary();
-
 renderCheckoutHeader();

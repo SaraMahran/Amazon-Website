@@ -10,8 +10,9 @@ import {
 import {products, getProduct} from '../../data/products.js';
 import {formatCurrency} from '../utlis/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
+import {deliveryOptions, getDeliveryOption, calculateDeliveryDate} from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
+import {renderCheckoutHeader} from './checkoutHeader.js';
 
 
 
@@ -27,14 +28,7 @@ import {renderPaymentSummary} from './paymentSummary.js';
 
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-  const today = dayjs();
-    const deliveryDate = today.add(
-      deliveryOption.deliveryDays,
-      'days'
-    );
-    const dateString = deliveryDate.format(
-      'dddd, MMMM D'
-    );
+    const dateString = calculateDeliveryDate(deliveryOption);
 
     cartSummaryHTML += `
       <div class="cart-item-container
@@ -87,14 +81,7 @@ import {renderPaymentSummary} from './paymentSummary.js';
 
     let html = '';
     deliveryOptions.forEach((deliveryOption) => {
-      const today = dayjs();
-      const deliveryDate = today.add(
-        deliveryOption.deliveryDays,
-        'days'
-      );
-      const dateString = deliveryDate.format(
-        'dddd, MMMM D'
-      );
+      const dateString = calculateDeliveryDate(deliveryOption);
 
       const priceString = deliveryOption.priceCents
       === 0
@@ -144,13 +131,13 @@ import {renderPaymentSummary} from './paymentSummary.js';
       });
     });
 
-  function updateCartQuantity() {
-    const cartQuantity = calculateCartQuantity();
-      document.querySelector('.js-return-to-home-link')
-        .innerHTML = `${cartQuantity} items`;
-    }
+  // function updateCartQuantity() {
+  //   const cartQuantity = calculateCartQuantity();
+  //     document.querySelector('.js-return-to-home-link')
+  //       .innerHTML = `${cartQuantity} items`;
+  //   }
     
-    updateCartQuantity();
+  //   updateCartQuantity();
 
     document.querySelectorAll('.js-update-link')
     .forEach((link) => {
@@ -188,6 +175,8 @@ import {renderPaymentSummary} from './paymentSummary.js';
       element.addEventListener('click', () => {
         const {productId, deliveryOptionId} = element.dataset;
         updateDeliveryOption(productId, deliveryOptionId);
+
+        renderCheckoutHeader();
         renderOrderSummary();
         renderPaymentSummary();
 
